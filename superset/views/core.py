@@ -1577,26 +1577,10 @@ class Superset(BaseSupersetView):
         logging.info('schema: {0}'.format(schema))
         logging.info('substr: {0}'.format(substr))
 
-        if db_id == 5:
-            from pyhive import hive
-
-            conn = hive.Connection(host='172.31.28.5', port=10001, username='hive', database=schema)
-            cur = conn.cursor()
-
-            query = 'SHOW TABLES'
-            if schema is not None:
-                query += ' IN %s' % schema
-            return [tup[0] for tup in cur.execute(query).fetchall()]
-
-
         if schema:
             if db_id == 2:
-                from impala.dbapi import connect
-
-                conn = connect(host='172.31.28.5', port=10001,
-                               auth_mechanism='PLAIN',
-                               user='hive',
-                               database=schema, timeout=1200)
+                from pyhive import hive
+                conn = hive.Connection(host='172.31.28.5', port=10001, username='hive', database=schema)
                 cur = conn.cursor()
 
                 query = 'SHOW TABLES'
