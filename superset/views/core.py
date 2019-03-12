@@ -1577,16 +1577,46 @@ class Superset(BaseSupersetView):
         logging.info('schema: {0}'.format(schema))
         logging.info('substr: {0}'.format(substr))
 
+        if db_id == 5:
+            from impala.dbapi import connect
+
+            conn = connect(host='172.31.28.5', port=10001,
+                           auth_mechanism='PLAIN',
+                           user='hive',
+                           database=schema, timeout=1200)
+            cur = conn.cursor()
+
+            query = 'SHOW TABLES'
+            if schema is not None:
+                query += ' IN %s' % schema
+            return [tup[0] for tup in cur.execute(query).fetchall()]
+
+
         if schema:
-            table_names = database.all_table_names_in_schema(
-                schema=schema, force=force_refresh,
-                cache=database.table_cache_enabled,
-                cache_timeout=database.table_cache_timeout)
-            logging.info('Database.tables(). Masked URL: {0}'.format(table_names))
-            view_names = database.all_view_names_in_schema(
-                schema=schema, force=force_refresh,
-                cache=database.table_cache_enabled,
-                cache_timeout=database.table_cache_timeout)
+            if db_id == 2:
+                from impala.dbapi import connect
+
+                conn = connect(host='172.31.28.5', port=10001,
+                               auth_mechanism='PLAIN',
+                               user='hive',
+                               database=schema, timeout=1200)
+                cur = conn.cursor()
+
+                query = 'SHOW TABLES'
+                if schema is not None:
+                    query += ' IN %s' % schema
+
+                table_names = [tup[0] for tup in cur.execute(query).fetchall()]
+            else:
+                table_names = database.all_table_names_in_schema(
+                    schema=schema, force=force_refresh,
+                    cache=database.table_cache_enabled,
+                    cache_timeout=database.table_cache_timeout)
+                logging.info('Database.tables(). Masked URL: {0}'.format(table_names))
+                view_names = database.all_view_names_in_schema(
+                    schema=schema, force=force_refresh,
+                    cache=database.table_cache_enabled,
+                    cache_timeout=database.table_cache_timeout)
         else:
             table_names = database.all_table_names_in_database(
                 cache=True, force=False, cache_timeout=24 * 60 * 60)
