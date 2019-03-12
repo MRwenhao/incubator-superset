@@ -1578,12 +1578,9 @@ class Superset(BaseSupersetView):
         logging.info('substr: {0}'.format(substr))
 
         if db_id == 5:
-            from impala.dbapi import connect
+            from pyhive import hive
 
-            conn = connect(host='172.31.28.5', port=10001,
-                           auth_mechanism='PLAIN',
-                           user='hive',
-                           database=schema, timeout=1200)
+            conn = hive.Connection(host='172.31.28.5', port=10001, username='hive', database=schema)
             cur = conn.cursor()
 
             query = 'SHOW TABLES'
