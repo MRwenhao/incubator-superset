@@ -1574,6 +1574,8 @@ class Superset(BaseSupersetView):
         substr = utils.js_string_to_python(substr)
         database = db.session.query(models.Database).filter_by(id=db_id).one()
         logging.info('db_id: {0}'.format(str(db_id)))
+        logging.info('schema: {0}'.format(schema))
+        logging.info('substr: {0}'.format(substr))
 
         if schema:
             table_names = database.all_table_names_in_schema(
