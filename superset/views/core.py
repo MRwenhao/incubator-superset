@@ -1575,7 +1575,7 @@ class Superset(BaseSupersetView):
         database = db.session.query(models.Database).filter_by(id=db_id).one()
 
         if schema:
-            if db_id == 2:
+            if db_id == 5:
                 from pyhive import hive
                 cursor = hive.connect(host='172.31.28.5', port=10001, username='hive', database=schema).cursor()
 
