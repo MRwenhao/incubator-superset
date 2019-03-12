@@ -1579,6 +1579,7 @@ class Superset(BaseSupersetView):
                 schema=schema, force=force_refresh,
                 cache=database.table_cache_enabled,
                 cache_timeout=database.table_cache_timeout)
+            logging.info('Database.get_sqla_engine(). Masked URL: {0}'.format(table_names))
             view_names = database.all_view_names_in_schema(
                 schema=schema, force=force_refresh,
                 cache=database.table_cache_enabled,
