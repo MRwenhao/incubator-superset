@@ -1573,13 +1573,14 @@ class Superset(BaseSupersetView):
         schema = utils.js_string_to_python(schema)
         substr = utils.js_string_to_python(substr)
         database = db.session.query(models.Database).filter_by(id=db_id).one()
+        logging.info('db_id: {0}'.format(str(db_id)))
 
         if schema:
             table_names = database.all_table_names_in_schema(
                 schema=schema, force=force_refresh,
                 cache=database.table_cache_enabled,
                 cache_timeout=database.table_cache_timeout)
-            logging.info('Database.get_sqla_engine(). Masked URL: {0}'.format(table_names))
+            logging.info('Database.tables(). Masked URL: {0}'.format(table_names))
             view_names = database.all_view_names_in_schema(
                 schema=schema, force=force_refresh,
                 cache=database.table_cache_enabled,
