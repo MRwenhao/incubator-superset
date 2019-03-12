@@ -912,6 +912,7 @@ class Database(Model, AuditMixinNullable, ImportMixin):
     @property
     def inspector(self):
         engine = self.get_sqla_engine()
+        logging.info('engine: {0}'.format(engine))
         return sqla.inspect(engine)
 
     @cache_util.memoized_func(
