@@ -1580,14 +1580,24 @@ class Superset(BaseSupersetView):
         if schema:
             if db_id == 2:
                 from pyhive import hive
-                conn = hive.Connection(host='172.31.28.5', port=10001, username='hive', database=schema)
-                cur = conn.cursor()
+                cursor = hive.connect(host='172.31.28.5', port=10001, username='hive', database=schema).cursor()
 
-                query = 'SHOW TABLES'
+                query = 'show tables'
                 if schema is not None:
-                    query += ' IN %s' % schema
+                    query += ' in %s' % schema
 
-                table_names = [tup[0] for tup in cur.execute(query).fetchall()]
+                cursor.execute(query)
+
+                data = cursor.fetchall()
+
+                table_names = [tup[1] for tup in data]
+
+                print(table_names)
+
+                view_names = database.all_view_names_in_schema(
+                    schema=schema, force=force_refresh,
+                    cache=database.table_cache_enabled,
+                    cache_timeout=database.table_cache_timeout)
             else:
                 table_names = database.all_table_names_in_schema(
                     schema=schema, force=force_refresh,
