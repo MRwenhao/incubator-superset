@@ -1574,6 +1574,7 @@ class Superset(BaseSupersetView):
         substr = utils.js_string_to_python(substr)
         database = db.session.query(models.Database).filter_by(id=db_id).one()
 
+        # edit by wuyl 2019-03-12
         if schema:
             if db_id == 5:
                 from pyhive import hive
@@ -1588,8 +1589,6 @@ class Superset(BaseSupersetView):
                 data = cursor.fetchall()
 
                 table_names = [tup[1] for tup in data]
-
-                print(table_names)
 
                 view_names = database.all_view_names_in_schema(
                     schema=schema, force=force_refresh,
